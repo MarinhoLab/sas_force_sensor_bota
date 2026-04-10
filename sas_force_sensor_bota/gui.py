@@ -16,6 +16,7 @@ from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryCl
 
 class ForceSensorMainWindow(QMainWindow):
     def __init__(self, shared_memory_client: ForceSensorSharedMemoryClient):
+        # TODO make this look nice
         super().__init__()
 
         self.setWindowTitle("Force Reader")

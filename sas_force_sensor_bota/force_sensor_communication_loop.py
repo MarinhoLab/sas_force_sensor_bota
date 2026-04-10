@@ -27,19 +27,21 @@ def communication_loop(run):
 
     this_package_share_directory = get_package_share_directory('sas_force_sensor_bota')
 
+    # TODO make this configurable
     config_path = str(this_package_share_directory / pathlib.Path("config") / pathlib.Path(
         "../config/bota_binary_gen0.json"))
 
     with ForceSensorBota(config_path) as fsb, mm.SharedMemoryManager() as smm:
-        # Lock
+
         lock = mp.Lock()
-        # Provider
+
         shared_memory_server = ForceSensorSharedMemoryServer(shared_memory_manager=smm, lock=lock)
-        # Receiver
+
         shared_memory_receiver_process = mp.Process(
             target=run,
             args=(shared_memory_server.get_shared_memory_receiver_initializer_args(), lock)
         )
+
         shared_memory_receiver_process.start()
 
         try:
@@ -60,8 +62,6 @@ def communication_loop(run):
                 if shared_memory_server.get_shutdown_flag():
                     print('force_sensor_bota::__main__::Info::Server shutdown by client.')
                     break
-
-
 
         except Exception as e:
             print('force_sensor_bota::__main__::Error::' + str(e))
