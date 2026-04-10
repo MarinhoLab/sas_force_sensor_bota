@@ -5,7 +5,7 @@
 ```console
 mkdir -p ~/sas_tutorial_workspace/docker/sas_force_sensor_bota/demo
 cd ~/sas_tutorial_workspace/docker/sas_force_sensor_bota/demo
-curl -OL https://raw.githubusercontent.com/MarinhoLab/sas_force_sensor_bota/refs/heads/main/docker/demo/compose.yml
+curl -OL https://raw.githubusercontent.com/MarinhoLab/sas_force_sensor_bota/refs/heads/jazzy/docker/demo/compose.yml
 
 xhost +local:root
 docker compose up
