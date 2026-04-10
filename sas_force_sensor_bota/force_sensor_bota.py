@@ -16,23 +16,23 @@ class ForceSensorBota(Node):
     def __init__(self, config_file: str):
         super().__init__('sas_force_sensor_bota')
 
+        self.declare_parameter('topic_name', '/sas_force_sensor_bota')
+        self.topic_name = self.get_parameter('topic_name').get_parameter_value().string_value
+
         self.publisher = self.create_publisher(
             msg_type=WrenchStamped,
-            topic='/sas_patient_side_manager/m0_0/set/external_mapped_wrench',
+            topic=f'{self.topic_name}/get/wrench',
             qos_profile=1)
 
         self.running = False
         self.bota_ft_sensor_driver = bota_driver.BotaDriver(config_file)
 
-        # Transition driver from UNCONFIGURED to INACTIVE state
         if not self.bota_ft_sensor_driver.configure():
             raise RuntimeError("Failed to configure driver")
 
-        # Uncomment to tare the sensor
         if not self.bota_ft_sensor_driver.tare():
             raise RuntimeError("Failed to tare sensor")
 
-        # Transition driver from INACTIVE to ACTIVE state
         if not self.bota_ft_sensor_driver.activate():
             raise RuntimeError("Failed to activate driver")
 
@@ -50,40 +50,32 @@ class ForceSensorBota(Node):
         ws = WrenchStamped()
 
         ws.header.stamp = self.get_clock().now().to_msg()
-        ws.header.frame_id = 'sas_force_sensor_bota'
-
-        a = 0.00015
-
-        ws.wrench.force.x = -bota_frame.force[0]*a
-        ws.wrench.force.y = -bota_frame.force[1]*a
-        ws.wrench.force.z = 2*bota_frame.force[2]*a
+        ws.header.frame_id = self.topic_name
+        ws.wrench.force.x = bota_frame.force[0]
+        ws.wrench.force.y = bota_frame.force[1]
+        ws.wrench.force.z = bota_frame.force[2]
 
         self.publisher.publish(ws)
 
         return bota_frame
 
         # Extract the data from the bota_frame
-        #status = bota_frame.status
-        #force = bota_frame.force
-        #torque = bota_frame.torque
-        #timestamp = bota_frame.timestamp
-        #temperature = bota_frame.temperature
-        #acceleration = bota_frame.acceleration
-        #angular_rate = bota_frame.angular_rate
-
-        #################################
-        ## YOUR CONTROL LOOP CODE HERE ##
-        #################################
+        # status = bota_frame.status
+        # force = bota_frame.force
+        # torque = bota_frame.torque
+        # timestamp = bota_frame.timestamp
+        # temperature = bota_frame.temperature
+        # acceleration = bota_frame.acceleration
+        # angular_rate = bota_frame.angular_rate
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # Transition driver from ACTIVE to INACTIVE state
+
         if not self.bota_ft_sensor_driver.deactivate():
             raise RuntimeError("Failed to deactivate driver")
 
-        # Shutdown the driver
         if not self.bota_ft_sensor_driver.shutdown():
             raise RuntimeError("Failed to shutdown driver")
 
