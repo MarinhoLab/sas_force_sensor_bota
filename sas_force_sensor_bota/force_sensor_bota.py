@@ -42,6 +42,17 @@ class ForceSensorBota(Node):
         return self.running
 
     def read(self):
+        """
+        Extract the data from the bota_frame
+        status = bota_frame.status
+        force = bota_frame.force
+        torque = bota_frame.torque
+        timestamp = bota_frame.timestamp
+        temperature = bota_frame.temperature
+        acceleration = bota_frame.acceleration
+        angular_rate = bota_frame.angular_rate
+        :return:
+        """
         if not self.running:
             return None
 
@@ -54,19 +65,13 @@ class ForceSensorBota(Node):
         ws.wrench.force.x = bota_frame.force[0]
         ws.wrench.force.y = bota_frame.force[1]
         ws.wrench.force.z = bota_frame.force[2]
+        ws.wrench.torque.x = bota_frame.torque[0]
+        ws.wrench.torque.y = bota_frame.torque[1]
+        ws.wrench.torque.z = bota_frame.torque[2]
 
         self.publisher.publish(ws)
 
         return bota_frame
-
-        # Extract the data from the bota_frame
-        # status = bota_frame.status
-        # force = bota_frame.force
-        # torque = bota_frame.torque
-        # timestamp = bota_frame.timestamp
-        # temperature = bota_frame.temperature
-        # acceleration = bota_frame.acceleration
-        # angular_rate = bota_frame.angular_rate
 
     def __enter__(self):
         return self

@@ -28,7 +28,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "sas_force_sensor_bota_node = sas_force_sensor_bota.main:main"
+            "sas_force_sensor_bota_node = sas_force_sensor_bota.main:main",
+            "sas_force_sensor_client_example_node = sas_force_sensor_bota.sas_force_sensor_client_example:main",
         ],
     },
 )
