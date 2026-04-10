@@ -1,0 +1,9 @@
+services:
+  sas_force_sensor_bota:
+    build: .
+    volumes:
+      - ../../sas_force_sensor_bota:/root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota
+    command: /bin/bash -c "
+      cd /root/sas_force_sensor_bota_devel/src/
+      && ls .
+      && colcon build"

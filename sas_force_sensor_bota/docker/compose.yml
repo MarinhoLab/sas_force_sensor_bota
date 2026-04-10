@@ -1,0 +1,13 @@
+services:
+  sas_common:
+    build: .
+    volumes:
+      - ../../sas_common:/root/sas_common_devel/src/sas_common
+    command: /bin/bash -c "
+      cd /root/sas_common_devel/src/
+      && ls .
+      && colcon build
+      && source install/setup.bash
+      && ros2 launch sas_common sas_common_ros2_parameter_test_launch.py
+      && ros2 run sas_common sas_object_test_node
+      && ros2 run sas_common test_python_wrapper.py"
