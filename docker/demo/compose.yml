@@ -1,0 +1,27 @@
+services:
+  sas_force_sensor_bota_server:
+    image: murilomarinho/sas:jazzy
+    environment:
+      - TIMEOUT=20
+      - DISPLAY
+      - ROS_DOMAIN_ID
+    privileged: true # Needed for USB connection
+    volumes:
+      - ~/.Xauthority:/root/.Xauthority # x server related
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw # x server related
+    command: /bin/bash -c "
+      sudo apt-get update
+      && sudo apt-get upgrade -y
+      && source /opt/ros/jazzy/setup.bash
+      && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota sas_force_sensor_bota_launch.py"
+      
+  sas_force_sensor_bota_client:
+    image: murilomarinho/sas:jazzy
+    environment:
+      - TIMEOUT=20
+      - ROS_DOMAIN_ID
+    command: /bin/bash -c "
+      sudo apt-get update
+      && sudo apt-get upgrade -y
+      && source /opt/ros/jazzy/setup.bash
+      && timeout -s INT $$TIMEOUT ros2 run sas_force_sensor_bota sas_force_sensor_client_example_node"
