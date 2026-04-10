@@ -1,12 +1,16 @@
 services:
   sas_force_sensor_bota:
     build: .
+    environment:
+      - TIMEOUT=20
+      - DISPLAY
+      - ROS_DOMAIN_ID
+    privileged: true # Needed for USB connection
     volumes:
+      - ~/.Xauthority:/root/.Xauthority # x server related
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw # x server related
       - ../../sas_force_sensor_bota:/root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota
     command: /bin/bash -c "
-      cd /root/sas_force_sensor_bota_devel/src/
-      && ls .
-      && colcon build
-      && source install/setup.bash
-      && timeout -s INT 20 ros2 run sas_force_sensor_bota sas_force_sensor_client_example_node
-      && timeout -s INT 20 ros2 launch sas_force_sensor_bota sas_force_sensor_bota_launch.py"
+      cd /root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota/docker
+      && chmod +x test.sh 
+      && ./test.sh"
