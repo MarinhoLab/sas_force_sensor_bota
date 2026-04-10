@@ -26,7 +26,9 @@ class ForceSensorClient:
         self.wrench = None
 
     def subscriber_callback(self, msg: WrenchStamped) -> np.array:
-        self.wrench = np.array([msg.force.x, msg.force.y, msg.force.z, msg.torque.x, msg.torque.y, msg.torque.z])
+        f = msg.wrench.force
+        t = msg.wrench.torque
+        self.wrench = np.array([f.x, f.y, f.z, t.x, t.y, t.z])
 
     def get_wrench(self):
         if self.wrench is None:
