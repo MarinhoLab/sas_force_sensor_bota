@@ -50,7 +50,7 @@ class ForceSensorMainWindow(QMainWindow):
         # TODO make this look nice
         super().__init__()
 
-        self.setWindowTitle("Force Reader")
+        self.setWindowTitle("MarinhoLab's Force Sensor Reader")
 
         self.setMinimumHeight(400)
 
@@ -66,13 +66,38 @@ class ForceSensorMainWindow(QMainWindow):
         self.force_slider = SliderLabelVertical("Force Norm", (-300,300), self)
         self.torque_slider = SliderLabelVertical("Torque Norm", (-300,300), self)
 
-        self.plot_f = pg.plot(title="My Title")
-        self.fx_queue = Queue(maxsize=100)
-        self.plot_f.plot([])
+        self.force_plot_layout = QVBoxLayout()
+        self.plot_fx = pg.plot(title="f_x")
+        self.plot_fy = pg.plot(title="f_y")
+        self.plot_fz = pg.plot(title="f_z")
+        self.fx_queue = Queue(maxsize=200)
+        self.fy_queue = Queue(maxsize=200)
+        self.fz_queue = Queue(maxsize=200)
+        self.data_fx = self.plot_fx.plot([])
+        self.data_fy = self.plot_fy.plot([])
+        self.data_fz = self.plot_fz.plot([])
+        self.force_plot_layout.addWidget(self.plot_fx)
+        self.force_plot_layout.addWidget(self.plot_fy)
+        self.force_plot_layout.addWidget(self.plot_fz)
+
+        self.torque_plot_layout = QVBoxLayout()
+        self.plot_tx = pg.plot(title="\tau_x")
+        self.plot_ty = pg.plot(title="\tau_y")
+        self.plot_tz = pg.plot(title="\tau_z")
+        self.tx_queue = Queue(maxsize=200)
+        self.ty_queue = Queue(maxsize=200)
+        self.tz_queue = Queue(maxsize=200)
+        self.data_tx = self.plot_tx.plot([])
+        self.data_ty = self.plot_ty.plot([])
+        self.data_tz = self.plot_tz.plot([])
+        self.torque_plot_layout.addWidget(self.plot_tx)
+        self.torque_plot_layout.addWidget(self.plot_ty)
+        self.torque_plot_layout.addWidget(self.plot_tz)
 
         self.layout.addWidget(self.force_slider)
         self.layout.addWidget(self.torque_slider)
-        self.layout.addWidget(self.plot_f)
+        self.layout.addLayout(self.force_plot_layout)
+        self.layout.addLayout(self.torque_plot_layout)
 
         self.central_widget.setLayout(self.layout)
 
@@ -85,11 +110,39 @@ class ForceSensorMainWindow(QMainWindow):
                 wrench = self.shared_memory_client.get_wrench()
 
                 f = np.array(wrench[0:3])
+                t = np.array(wrench[3:6])
                 f_norm = np.linalg.norm(f)
+
                 if self.fx_queue.full():
                     self.fx_queue.get()
                 self.fx_queue.put(f[0])
-                self.plot_f.setData((np.asarray(self.fx_queue.queue), np.linspace(0,1,self.fx_queue.qsize())))
+                self.data_fx.setData(np.linspace(0, 1, self.fx_queue.qsize()), np.asarray(self.fx_queue.queue))
+
+                if self.fy_queue.full():
+                    self.fy_queue.get()
+                self.fy_queue.put(f[1])
+                self.data_fy.setData(np.linspace(0, 1, self.fy_queue.qsize()), np.array(self.fy_queue.queue))
+
+                if self.fz_queue.full():
+                    self.fz_queue.get()
+                self.fz_queue.put(f[2])
+                self.data_fz.setData(np.linspace(0, 1, self.fz_queue.qsize()), np.array(self.fz_queue.queue))
+
+                if self.tx_queue.full():
+                    self.tx_queue.get()
+                self.tx_queue.put(t[0])
+                self.data_tx.setData(np.linspace(0, 1, self.tx_queue.qsize()), np.asarray(self.tx_queue.queue))
+
+                if self.ty_queue.full():
+                    self.ty_queue.get()
+                self.ty_queue.put(t[1])
+                self.data_ty.setData(np.linspace(0, 1, self.ty_queue.qsize()), np.asarray(self.ty_queue.queue))
+
+                if self.tz_queue.full():
+                    self.tz_queue.get()
+                self.tz_queue.put(t[2])
+                self.data_tz.setData(np.linspace(0, 1, self.tz_queue.qsize()), np.asarray(self.tz_queue.queue))
+
                 self.force_slider.set_value(int(f_norm))
                 self.force_slider.set_text('{:.2f}'.format(f_norm))
 
