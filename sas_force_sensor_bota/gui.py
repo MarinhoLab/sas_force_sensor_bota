@@ -47,7 +47,8 @@ class SliderLabelVertical(QWidget):
 
 class ForceSensorMainWindow(QMainWindow):
     def __init__(self, shared_memory_client: ForceSensorSharedMemoryClient):
-        # TODO make this look nice
+        # ---- make this look nice.
+        # TODO make this look nicer
         super().__init__()
 
         self.setWindowTitle("MarinhoLab's Force Sensor Reader")
@@ -117,31 +118,37 @@ class ForceSensorMainWindow(QMainWindow):
                     self.fx_queue.get()
                 self.fx_queue.put(f[0])
                 self.data_fx.setData(np.linspace(0, 1, self.fx_queue.qsize()), np.asarray(self.fx_queue.queue))
+                self.plot_fx.setTitle("fx")
 
                 if self.fy_queue.full():
                     self.fy_queue.get()
                 self.fy_queue.put(f[1])
                 self.data_fy.setData(np.linspace(0, 1, self.fy_queue.qsize()), np.array(self.fy_queue.queue))
+                self.plot_fy.setTitle("fy")
 
                 if self.fz_queue.full():
                     self.fz_queue.get()
                 self.fz_queue.put(f[2])
                 self.data_fz.setData(np.linspace(0, 1, self.fz_queue.qsize()), np.array(self.fz_queue.queue))
+                self.plot_fz.setTitle("fz")
 
                 if self.tx_queue.full():
                     self.tx_queue.get()
                 self.tx_queue.put(t[0])
                 self.data_tx.setData(np.linspace(0, 1, self.tx_queue.qsize()), np.asarray(self.tx_queue.queue))
+                self.plot_tx.setTitle("tx")
 
                 if self.ty_queue.full():
                     self.ty_queue.get()
                 self.ty_queue.put(t[1])
                 self.data_ty.setData(np.linspace(0, 1, self.ty_queue.qsize()), np.asarray(self.ty_queue.queue))
+                self.plot_ty.setTitle("ty")
 
                 if self.tz_queue.full():
                     self.tz_queue.get()
                 self.tz_queue.put(t[2])
                 self.data_tz.setData(np.linspace(0, 1, self.tz_queue.qsize()), np.asarray(self.tz_queue.queue))
+                self.plot_tz.setTitle("tz")
 
                 self.force_slider.set_value(int(f_norm))
                 self.force_slider.set_text('{:.2f}'.format(f_norm))
