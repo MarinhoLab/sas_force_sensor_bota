@@ -1,2 +1,3 @@
+pyqtgraph
 bota-driver
 PyQt6
