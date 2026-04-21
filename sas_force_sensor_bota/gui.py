@@ -8,11 +8,42 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Gen
 You should have received a copy of the GNU General Public License along with this program. If not,
 see <https://www.gnu.org/licenses/>.
 """
+from queue import Queue
+
 import numpy as np
+
 from PyQt6.QtCore import QTimer, Qt, QCoreApplication
-from PyQt6.QtWidgets import QApplication, QMainWindow, QSlider, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QApplication, QMainWindow, QSlider, QHBoxLayout, QVBoxLayout, QLabel
+
+import pyqtgraph as pg
 
 from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
+
+class SliderLabelVertical(QWidget):
+    def __init__(self, label:str, slider_range:tuple[int,int] , parent=None):
+        super().__init__(parent)
+
+        self.description_label = QLabel()
+        self.description_label.setText(label)
+
+        self.value_label = QLabel()
+        self.value_label.setText(label)
+
+        self.slider = QSlider(Qt.Orientation.Vertical)
+        self.slider.setRange(slider_range[0], slider_range[1])
+
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.description_label)
+        self.layout.addWidget(self.value_label)
+        self.layout.addWidget(self.slider)
+
+        self.setLayout(self.layout)
+
+    def set_value(self, value):
+        self.slider.setValue(value)
+
+    def set_text(self, text):
+        self.value_label.setText(text)
 
 class ForceSensorMainWindow(QMainWindow):
     def __init__(self, shared_memory_client: ForceSensorSharedMemoryClient):
@@ -29,23 +60,23 @@ class ForceSensorMainWindow(QMainWindow):
         self.timer_.timeout.connect(self._timer_callback)
         self.timer_.start(1)
 
-        self.layout = QVBoxLayout(self)
+        self.central_widget = QWidget()
+        self.layout = QHBoxLayout(self)
 
-        self.slider_force_label = QLabel(self)
-        self.slider_force_label.setText("Force")
-        self.slider_torque_label = QLabel(self)
-        self.slider_torque_label.setText("Torque")
+        self.force_slider = SliderLabelVertical("Force Norm", (-300,300), self)
+        self.torque_slider = SliderLabelVertical("Torque Norm", (-300,300), self)
 
-        self.slider_force = QSlider(Qt.Orientation.Vertical, self)
-        self.slider_force.setRange(-300, 300)
-        self.slider_torque = QSlider(Qt.Orientation.Vertical, self)
-        self.slider_torque.setRange(-300, 300)
+        self.plot_f = pg.plot(title="My Title")
+        self.fx_queue = Queue(maxsize=100)
+        self.plot_f.plot([])
 
-        self.layout.addWidget(self.slider_force_label)
-        self.layout.addWidget(self.slider_force)
-        self.layout.addWidget(self.slider_torque)
+        self.layout.addWidget(self.force_slider)
+        self.layout.addWidget(self.torque_slider)
+        self.layout.addWidget(self.plot_f)
 
-        self.setCentralWidget(self.slider_force)
+        self.central_widget.setLayout(self.layout)
+
+        self.setCentralWidget(self.central_widget)
 
 
     def _timer_callback(self):
@@ -55,13 +86,17 @@ class ForceSensorMainWindow(QMainWindow):
 
                 f = np.array(wrench[0:3])
                 f_norm = np.linalg.norm(f)
-                self.slider_force.setValue(int(f_norm))
-                self.slider_force_label.setText('{:.2f}'.format(f_norm))
+                if self.fx_queue.full():
+                    self.fx_queue.get()
+                self.fx_queue.put(f[0])
+                self.plot_f.setData((np.asarray(self.fx_queue.queue), np.linspace(0,1,self.fx_queue.qsize())))
+                self.force_slider.set_value(int(f_norm))
+                self.force_slider.set_text('{:.2f}'.format(f_norm))
 
                 t = np.array(wrench[3:5])
                 t_norm = np.linalg.norm(t)
-                self.slider_torque.setValue(int(t_norm))
-                self.slider_torque_label.setText('{:.2f}'.format(t_norm))
+                self.torque_slider.set_value(int(t_norm))
+                self.torque_slider.set_text('{:.2f}'.format(t_norm))
 
             if self.shared_memory_client.get_shutdown_flag():
                 QCoreApplication.quit()
