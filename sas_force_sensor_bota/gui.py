@@ -72,6 +72,9 @@ class ForceSensorMainWindow(QMainWindow):
         self.plot_fy = pg.plot(title="f_y")
         self.plot_fz = pg.plot(title="f_z")
         self.fx_queue = Queue(maxsize=200)
+        self.fx_lims = [0,0]
+        self.fy_lims = [0,0]
+        self.fz_lims = [0,0]
         self.fy_queue = Queue(maxsize=200)
         self.fz_queue = Queue(maxsize=200)
         self.data_fx = self.plot_fx.plot([])
@@ -117,19 +120,31 @@ class ForceSensorMainWindow(QMainWindow):
                 if self.fx_queue.full():
                     self.fx_queue.get()
                 self.fx_queue.put(f[0])
-                self.data_fx.setData(np.linspace(0, 1, self.fx_queue.qsize()), np.asarray(self.fx_queue.queue))
+                current_data = np.asarray(self.fx_queue.queue)
+                self.fx_lims[0] = min(self.fx_lims[0], np.min(current_data))
+                self.fx_lims[1] = max(self.fx_lims[1], np.max(current_data))
+                self.data_fx.setData(np.linspace(0, 1, self.fx_queue.qsize()), current_data)
+                self.plot_fx.setYRange(self.fx_lims[0], self.fx_lims[1])
                 self.plot_fx.setTitle("fx")
 
                 if self.fy_queue.full():
                     self.fy_queue.get()
                 self.fy_queue.put(f[1])
-                self.data_fy.setData(np.linspace(0, 1, self.fy_queue.qsize()), np.array(self.fy_queue.queue))
+                current_data = np.asarray(self.fy_queue.queue)
+                self.fy_lims[0] = min(self.fy_lims[0], np.min(current_data))
+                self.fy_lims[1] = max(self.fy_lims[1], np.max(current_data))
+                self.data_fy.setData(np.linspace(0, 1, self.fy_queue.qsize()), current_data)
+                self.plot_fy.setYRange(self.fy_lims[0], self.fy_lims[1])
                 self.plot_fy.setTitle("fy")
 
                 if self.fz_queue.full():
                     self.fz_queue.get()
                 self.fz_queue.put(f[2])
-                self.data_fz.setData(np.linspace(0, 1, self.fz_queue.qsize()), np.array(self.fz_queue.queue))
+                current_data = np.asarray(self.fz_queue.queue)
+                self.fz_lims[0] = min(self.fz_lims[0], np.min(current_data))
+                self.fz_lims[1] = max(self.fz_lims[1], np.max(current_data))
+                self.data_fz.setData(np.linspace(0, 1, self.fz_queue.qsize()), current_data)
+                self.plot_fz.setYRange(self.fz_lims[0], self.fz_lims[1])
                 self.plot_fz.setTitle("fz")
 
                 if self.tx_queue.full():
