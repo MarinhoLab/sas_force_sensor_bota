@@ -15,6 +15,7 @@ import numpy as np
 from PyQt6.QtCore import QTimer, Qt, QCoreApplication
 from PyQt6.QtWidgets import QWidget, QApplication, QMainWindow, QSlider, QHBoxLayout, QVBoxLayout, QLabel
 
+import qdarktheme
 import pyqtgraph as pg
 
 from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
@@ -88,6 +89,9 @@ class ForceSensorMainWindow(QMainWindow):
         self.plot_tx = pg.plot(title="\tau_x")
         self.plot_ty = pg.plot(title="\tau_y")
         self.plot_tz = pg.plot(title="\tau_z")
+        self.tx_lims = [0,0]
+        self.ty_lims = [0,0]
+        self.tz_lims = [0,0]
         self.tx_queue = Queue(maxsize=200)
         self.ty_queue = Queue(maxsize=200)
         self.tz_queue = Queue(maxsize=200)
@@ -150,19 +154,28 @@ class ForceSensorMainWindow(QMainWindow):
                 if self.tx_queue.full():
                     self.tx_queue.get()
                 self.tx_queue.put(t[0])
-                self.data_tx.setData(np.linspace(0, 1, self.tx_queue.qsize()), np.asarray(self.tx_queue.queue))
+                current_data = np.asarray(self.tx_queue.queue)
+                self.tx_lims[0] = min(self.tx_lims[0], np.min(current_data))
+                self.tx_lims[1] = max(self.tx_lims[1], np.max(current_data))
+                self.data_tx.setData(np.linspace(0, 1, self.tx_queue.qsize()), current_data)
                 self.plot_tx.setTitle("tx")
 
                 if self.ty_queue.full():
                     self.ty_queue.get()
                 self.ty_queue.put(t[1])
-                self.data_ty.setData(np.linspace(0, 1, self.ty_queue.qsize()), np.asarray(self.ty_queue.queue))
+                current_data = np.asarray(self.ty_queue.queue)
+                self.ty_lims[0] = min(self.ty_lims[0], np.min(current_data))
+                self.ty_lims[1] = max(self.ty_lims[1], np.max(current_data))
+                self.data_ty.setData(np.linspace(0, 1, self.ty_queue.qsize()), current_data)
                 self.plot_ty.setTitle("ty")
 
                 if self.tz_queue.full():
                     self.tz_queue.get()
                 self.tz_queue.put(t[2])
-                self.data_tz.setData(np.linspace(0, 1, self.tz_queue.qsize()), np.asarray(self.tz_queue.queue))
+                current_data = np.asarray(self.tz_queue.queue)
+                self.tz_lims[0] = min(self.tz_lims[0], np.min(current_data))
+                self.tz_lims[1] = max(self.tz_lims[1], np.max(current_data))
+                self.data_tz.setData(np.linspace(0, 1, self.tz_queue.qsize()), current_data)
                 self.plot_tz.setTitle("tz")
 
                 self.force_slider.set_value(int(f_norm))
@@ -183,6 +196,7 @@ def run(shared_memory_info, lock):
     try:
         app = QApplication([])
         myapp = ForceSensorMainWindow(shared_memory_client)
+        qdarktheme.setup_theme()
         myapp.show()
         app.exec()
     except Exception as e:
