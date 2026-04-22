@@ -158,6 +158,7 @@ class ForceSensorMainWindow(QMainWindow):
                 self.tx_lims[0] = min(self.tx_lims[0], np.min(current_data))
                 self.tx_lims[1] = max(self.tx_lims[1], np.max(current_data))
                 self.data_tx.setData(np.linspace(0, 1, self.tx_queue.qsize()), current_data)
+                self.plot_tx.setYRange(self.tx_lims[0], self.tx_lims[1])
                 self.plot_tx.setTitle("tx")
 
                 if self.ty_queue.full():
@@ -167,6 +168,7 @@ class ForceSensorMainWindow(QMainWindow):
                 self.ty_lims[0] = min(self.ty_lims[0], np.min(current_data))
                 self.ty_lims[1] = max(self.ty_lims[1], np.max(current_data))
                 self.data_ty.setData(np.linspace(0, 1, self.ty_queue.qsize()), current_data)
+                self.plot_ty.setYRange(self.ty_lims[0], self.ty_lims[1])
                 self.plot_ty.setTitle("ty")
 
                 if self.tz_queue.full():
@@ -176,6 +178,7 @@ class ForceSensorMainWindow(QMainWindow):
                 self.tz_lims[0] = min(self.tz_lims[0], np.min(current_data))
                 self.tz_lims[1] = max(self.tz_lims[1], np.max(current_data))
                 self.data_tz.setData(np.linspace(0, 1, self.tz_queue.qsize()), current_data)
+                self.plot_tz.setYRange(self.tz_lims[0], self.tz_lims[1])
                 self.plot_tz.setTitle("tz")
 
                 self.force_slider.set_value(int(f_norm))
