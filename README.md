@@ -1,6 +1,10 @@
 # sas_force_sensor_bota
 
+[Bota Systems](https://botasystems.com) package compliant with `sas`. 
+
 ## Quick start
+
+Docker examples that do not need any installation or cloning the repository.
 
 ### EtherCat
 
