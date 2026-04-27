@@ -15,6 +15,8 @@ from rclpy.node import Node
 from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import WrenchStamped
 
+from sas_core import Clock
+
 class ForceSensorBota(Node):
     def __init__(self):
         super().__init__('sas_force_sensor_bota')
@@ -28,6 +30,9 @@ class ForceSensorBota(Node):
 
         self.declare_parameter('configuration_file_path', default_configuration_file_path)
         configuration_file_path = self.get_parameter('configuration_file_path').get_parameter_value().string_value
+
+        self.declare_parameter('sampling_time', 0.01)
+        sampling_time = self.get_parameter('sampling_time').get_parameter_value().double_value
 
         self.publisher = self.create_publisher(
             msg_type=WrenchStamped,
@@ -46,6 +51,8 @@ class ForceSensorBota(Node):
         if not self.bota_ft_sensor_driver.activate():
             raise RuntimeError("Failed to activate driver")
 
+        self.clock = Clock(sampling_time)
+        self.clock.init()
         self.running = True
 
     def is_open(self):
@@ -66,7 +73,11 @@ class ForceSensorBota(Node):
         if not self.running:
             return None
 
-        bota_frame = self.bota_ft_sensor_driver.read_frame_blocking()
+        self.clock.update_and_sleep()
+
+        # April 27, 2026. Some sensors are not compatible with blocking reads.
+        # bota_frame = self.bota_ft_sensor_driver.read_frame_blocking()
+        bota_frame = self.bota_ft_sensor_driver.read_frame()
 
         ws = WrenchStamped()
 
