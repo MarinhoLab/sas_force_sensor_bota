@@ -8,16 +8,26 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Gen
 You should have received a copy of the GNU General Public License along with this program. If not,
 see <https://www.gnu.org/licenses/>.
 """
+import pathlib
 import bota_driver
+
 from rclpy.node import Node
+from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import WrenchStamped
 
 class ForceSensorBota(Node):
-    def __init__(self, config_file: str):
+    def __init__(self):
         super().__init__('sas_force_sensor_bota')
 
         self.declare_parameter('topic_name', '/sas_force_sensor_bota')
         self.topic_name = self.get_parameter('topic_name').get_parameter_value().string_value
+
+        this_package_share_directory = get_package_share_directory('sas_force_sensor_bota')
+        default_configuration_file_path = str(this_package_share_directory / pathlib.Path("config") / pathlib.Path(
+            "../config/bota_binary_gen0.json"))
+
+        self.declare_parameter('configuration_file_path', default_configuration_file_path)
+        configuration_file_path = self.get_parameter('configuration_file_path').get_parameter_value().string_value
 
         self.publisher = self.create_publisher(
             msg_type=WrenchStamped,
@@ -25,7 +35,7 @@ class ForceSensorBota(Node):
             qos_profile=1)
 
         self.running = False
-        self.bota_ft_sensor_driver = bota_driver.BotaDriver(config_file)
+        self.bota_ft_sensor_driver = bota_driver.BotaDriver(configuration_file_path)
 
         if not self.bota_ft_sensor_driver.configure():
             raise RuntimeError("Failed to configure driver")
