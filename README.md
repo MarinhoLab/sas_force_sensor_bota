@@ -14,7 +14,8 @@ docker compose up
 ## Pre-requisites
 
 ```console
-python3 -m pip install bota_driver PyQt6 --break-system-packages
+wget https://raw.githubusercontent.com/MarinhoLab/sas_force_sensor_bota/refs/heads/jazzy/docker/install.sh
+chmod +x install.sh && . install.sh
 ```
 
 ## Running sensor server
@@ -22,6 +23,11 @@ python3 -m pip install bota_driver PyQt6 --break-system-packages
 ```console
 ros2 launch sas_force_sensor_bota sas_force_sensor_bota_launch.py
 ```
+
+| Configurable Parameter | Meaning |
+|------------------------|---------|
+|`topic_name`| Topic prefix, for instance, if there are multiple sensors in the same `ROS_DOMAIN`.|
+|`configuration_file_path`| The path to the `json` configuration file, see examples in the `config` folder.|
 
 ## Example client
 
