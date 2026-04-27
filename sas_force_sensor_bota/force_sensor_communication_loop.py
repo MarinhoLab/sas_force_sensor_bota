@@ -10,8 +10,6 @@ You should have received a copy of the GNU General Public License along with thi
 see <https://www.gnu.org/licenses/>.
 """
 import rclpy
-from rclpy.node import Node
-from ament_index_python.packages import get_package_share_directory
 
 import multiprocessing as mp
 import multiprocessing.managers as mm
@@ -21,21 +19,10 @@ from sas_force_sensor_bota.shared_memory.server import ForceSensorSharedMemorySe
 from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
 from sas_force_sensor_bota.force_sensor_bota import ForceSensorBota
 
-import pathlib
-
 def communication_loop(run):
     rclpy.init()
 
-    this_package_share_directory = get_package_share_directory('sas_force_sensor_bota')
-    default_configuration_file_path = str(this_package_share_directory / pathlib.Path("config") / pathlib.Path(
-        "../config/bota_binary_gen0.json"))
-
-    # TODO: Do we need a node just for this?
-    rospy_node = Node('sas_force_sensor_bota_configuration_subnode')
-    rospy_node.declare_parameter('configuration_file_path', default_configuration_file_path)
-    configuration_file_path = rospy_node.get_parameter('configuration_file_path').get_parameter_value().string_value
-
-    with ForceSensorBota(configuration_file_path) as fsb, mm.SharedMemoryManager() as smm:
+    with ForceSensorBota() as fsb, mm.SharedMemoryManager() as smm:
 
         lock = mp.Lock()
 
