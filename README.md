@@ -1,5 +1,9 @@
 # sas_force_sensor_bota
 
+> [!TIP]
+> Repository for this package: https://github.com/MarinhoLab/sas_force_sensor_bota \
+> More information about SmartArmStack is available in https://smartarmstack.github.io/.
+
 [Bota Systems](https://botasystems.com) package compliant with `sas`. 
 
 ## Quick start
