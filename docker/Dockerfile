@@ -5,7 +5,7 @@ ENV BASH_ENV="/etc/bash_env"
 
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
-COPY install.sh /root/sas_force_sensor_bota/
+COPY docker/install.sh /root/sas_force_sensor_bota/
 RUN cd /root/sas_force_sensor_bota \
     && chmod +x install.sh \
     && . install.sh
