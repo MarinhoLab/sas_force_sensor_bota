@@ -46,13 +46,49 @@ chmod +x install.sh && . install.sh
 ## Running sensor server
 
 ```console
-ros2 launch sas_force_sensor_bota sas_force_sensor_bota_launch.py
+ros2 launch sas_force_sensor_bota force_sensor_launch.py
 ```
+
+The launch file loads the parameters from `config/config.yaml` (override with
+`config_file:=/path/to/config.yaml`).
 
 | Configurable Parameter | Meaning |
 |------------------------|---------|
-|`topic_name`| Topic prefix, for instance, if there are multiple sensors in the same `ROS_DOMAIN`.|
-|`configuration_file_path`| The path to the `json` configuration file, see examples in the `config` folder.|
+|`configuration_file_path` (launch argument)| The path to the `json` configuration file, see examples in the `config` folder.|
+
+## ROS 2 Nodes & Parameters
+
+### Node: `sas_force_sensor_bota_node`
+
+| Property | Value |
+|---|---|
+| **Executable** | `sas_force_sensor_bota_node` |
+| **ROS node name** | `sas_force_sensor_bota_node` (set by the `name` launch argument of `force_sensor_launch.py`) |
+| **Description** | Reads the Bota force/torque sensor, publishes the wrench on `<topic_name>/get/wrench`, and keeps the sensor configured/activated for the node lifetime. |
+
+#### Parameters
+
+| Parameter | Type | Mandatory / Optional | Default | Purpose |
+|---|---|---|---|---|
+| `topic_name` | string | Optional | `/sas_force_sensor_bota` | Topic prefix; e.g. when there are multiple sensors in the same `ROS_DOMAIN` |
+| `configuration_file_path` | string | Optional | in-code default pointing at `config/bota_binary_gen0.json` in the package share directory | Path to the Bota JSON configuration file (hardware-specific) |
+| `sampling_time` | double | Optional | `0.01` | Sampling period of the read loop, in seconds |
+
+**How mandatory/optional is determined in code:**
+- **Mandatory** params are declared without a default — the node fails if they are not provided.
+- **Optional** params are declared with an in-code default.
+
+#### Sample launch
+
+```console
+ros2 launch sas_force_sensor_bota force_sensor_launch.py
+```
+
+To use the EtherCAT JSON configuration:
+
+```console
+ros2 launch sas_force_sensor_bota force_sensor_launch.py configuration_file_path:=/path/to/ethercat_gen0.json
+```
 
 ## Example client
 
