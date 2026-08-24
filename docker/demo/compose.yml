@@ -15,7 +15,7 @@ services:
       && chmod +x install.sh
       && . install.sh
       && source /opt/ros/jazzy/setup.bash
-      && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota sas_force_sensor_bota_launch.py"
+      && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota force_sensor_launch.py"
       
   sas_force_sensor_bota_client:
     image: murilomarinho/sas:jazzy
