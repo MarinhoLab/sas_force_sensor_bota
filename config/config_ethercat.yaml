@@ -1,0 +1,13 @@
+# Parameters for the sas_force_sensor_bota node — EtherCAT hardware variant.
+#
+# Loaded by force_sensor_launch.py via its `config_file` argument
+# (config_file:=.../config_ethercat.yaml). The only difference from
+# config.yaml is the hardware-specific `configuration_file_path`.
+
+# sas_force_sensor_bota_node
+sas_force_sensor_bota_node:
+  ros__parameters:
+    topic_name: '/sas_force_sensor_bota'
+    # Relative to the package config/ directory; absolute paths are also accepted.
+    configuration_file_path: 'ethercat_gen0.json'
+    sampling_time: 0.01  # 100 Hz
