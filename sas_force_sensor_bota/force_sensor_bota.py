@@ -8,6 +8,7 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Gen
 You should have received a copy of the GNU General Public License along with this program. If not,
 see <https://www.gnu.org/licenses/>.
 """
+import os.path
 import pathlib
 import bota_driver
 
@@ -26,10 +27,17 @@ class ForceSensorBota(Node):
 
         this_package_share_directory = get_package_share_directory('sas_force_sensor_bota')
         default_configuration_file_path = str(this_package_share_directory / pathlib.Path("config") / pathlib.Path(
-            "../config/bota_binary_gen0.json"))
+            "bota_binary_gen0.json"))
 
         self.declare_parameter('configuration_file_path', default_configuration_file_path)
         configuration_file_path = self.get_parameter('configuration_file_path').get_parameter_value().string_value
+
+        # A path relative to the package config/ directory (as in the sample
+        # YAML configurations) is resolved against that directory. Absolute
+        # paths are used as given.
+        if not os.path.isabs(configuration_file_path):
+            configuration_file_path = str(this_package_share_directory / pathlib.Path("config") / pathlib.Path(
+                configuration_file_path))
 
         self.declare_parameter('sampling_time', 0.01)
         sampling_time = self.get_parameter('sampling_time').get_parameter_value().double_value

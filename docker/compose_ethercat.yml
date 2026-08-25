@@ -15,7 +15,7 @@ services:
       cd /root/sas_force_sensor_bota_devel
       && colcon build
       && source install/setup.bash
-      && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota force_sensor_launch.py configuration_file_path:=/root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota/config/ethercat_gen0.json"
+      && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota force_sensor_launch.py config_file:=$$(ros2 pkg prefix sas_force_sensor_bota --share)/config/config_ethercat.yaml"
       
   sas_force_sensor_bota_client:
     build: .

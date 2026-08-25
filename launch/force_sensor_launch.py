@@ -11,13 +11,13 @@ def generate_launch_description():
     """Launch the Bota force sensor node.
 
     Parameters are loaded from a YAML configuration file. Pass a different
-    file with ``config_file:=/path/to/config.yaml``.
-    The hardware-specific ``configuration_file_path`` (a JSON file, see the
-    examples in ``config/``) is provided as a launch argument.
+    file with ``config_file:=/path/to/config.yaml`` (e.g.
+    ``config_ethercat.yaml`` for the EtherCAT hardware). The
+    hardware-specific ``configuration_file_path`` (a JSON file in ``config/``)
+    is embedded in the YAML configuration file.
     """
     name = LaunchConfiguration('name')
     config_file = LaunchConfiguration('config_file')
-    configuration_file_path = LaunchConfiguration('configuration_file_path')
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -28,19 +28,12 @@ def generate_launch_description():
             'config_file',
             default_value=os.path.join(get_package_share_directory('sas_force_sensor_bota'), 'config', 'config.yaml')
         ),
-        DeclareLaunchArgument(
-            'configuration_file_path',
-            default_value=os.path.join(get_package_share_directory('sas_force_sensor_bota'), 'config', 'bota_binary_gen0.json')
-        ),
         Node(
             package='sas_force_sensor_bota',
             executable='sas_force_sensor_bota_node',
             output='screen',
             emulate_tty=True,
             name=name,
-            parameters=[
-                config_file,
-                {'configuration_file_path': configuration_file_path}
-            ]
+            parameters=[config_file]
         )
     ])
