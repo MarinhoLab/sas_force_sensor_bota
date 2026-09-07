@@ -1,6 +1,8 @@
 services:
   sas_force_sensor_bota_server_ethercat:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     environment:
       - TIMEOUT=20
       - DISPLAY
@@ -10,7 +12,6 @@ services:
     volumes:
       - ~/.Xauthority:/root/.Xauthority # x server related
       - /tmp/.X11-unix:/tmp/.X11-unix:rw # x server related
-      - ../../sas_force_sensor_bota:/root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota
     command: /bin/bash -c "
       cd /root/sas_force_sensor_bota_devel
       && colcon build
@@ -18,12 +19,12 @@ services:
       && timeout -s INT $$TIMEOUT ros2 launch sas_force_sensor_bota force_sensor_launch.py config_file:=$$(ros2 pkg prefix sas_force_sensor_bota --share)/config/config_ethercat.yaml"
       
   sas_force_sensor_bota_client:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     environment:
       - TIMEOUT=20
       - ROS_DOMAIN_ID
-    volumes:
-      - ../../sas_force_sensor_bota:/root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota
     command: /bin/bash -c "
       cd /root/sas_force_sensor_bota_devel
       && colcon build
