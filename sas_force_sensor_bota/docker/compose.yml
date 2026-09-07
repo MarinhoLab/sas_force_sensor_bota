@@ -1,8 +1,8 @@
 services:
   sas_common:
-    build: .
-    volumes:
-      - ../../sas_common:/root/sas_common_devel/src/sas_common
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile
     command: /bin/bash -c "
       cd /root/sas_common_devel/src/
       && ls .

@@ -1,0 +1,5 @@
+# The build context (package root) is copied into the image via
+# `COPY . /root/sas_force_sensor_bota_devel/src/sas_force_sensor_bota`
+# in docker/Dockerfile. Keep only the package sources in the image.
+.git
+**/.git
