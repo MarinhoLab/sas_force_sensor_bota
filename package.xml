@@ -7,7 +7,10 @@
   <maintainer email="murilo.marinho@manchester.ac.uk">Murilo Marinho</maintainer>
   <license>TODO: License declaration</license>
 
-  <buildtool_depend>ament_python</buildtool_depend>
+  <!-- No buildtool_depend on ament_python: it is not a rosdep key, and the
+       SmartArmStack deb builder (SmartArmStack/smart_arm_stack_ROS2,
+       build_ros2.sh -> bloom-generate rosdebian) aborts on unresolvable
+       keys. colcon takes the build type from <export> below. -->
 
   <depend>geometry_msgs</depend>
   <depend>sas_core</depend>
