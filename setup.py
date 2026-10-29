@@ -22,7 +22,7 @@ setup(
     maintainer='Murilo Marinho',
     maintainer_email='murilo.marinho@manchester.ac.uk',
     description='Bota Systems force torque sensor package compliant with the SmartArmStack sas framework',
-    license='LGPL-2.1-only',
+    license='LGPL-3.0-or-later',
     extras_require={
         'test': [
             'pytest',
