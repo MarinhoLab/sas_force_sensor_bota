@@ -11,6 +11,7 @@ see <https://www.gnu.org/licenses/>.
 import time
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 from sas_force_sensor_bota.sas_force_sensor_client import ForceSensorClient
@@ -33,7 +34,7 @@ def main(args=None):
             print(f"Wrench = {fsc.get_wrench()}")
             rclpy.spin_once(node)
 
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     except Exception as e:
         print(e)
