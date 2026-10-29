@@ -19,7 +19,7 @@ from ament_flake8.main import main_with_errors
 @pytest.mark.flake8
 @pytest.mark.linter
 def test_flake8():
-    rc, errors = main_with_errors(argv=[])
+    rc, errors = main_with_errors(argv=[])  # pyright: ignore[reportGeneralTypeIssues]
     assert rc == 0, \
         f'Found {len(errors)} code style errors / warnings:\n' + \
         '\n'.join(errors)

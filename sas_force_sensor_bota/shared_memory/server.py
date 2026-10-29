@@ -8,9 +8,9 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Les
 You should have received a copy of the GNU Lesser General Public License along with this program. If not,
 see <https://www.gnu.org/licenses/>.
 """
-from multiprocessing import Lock
 from multiprocessing.managers import SharedMemoryManager
 from multiprocessing.shared_memory import ShareableList
+from multiprocessing.synchronize import Lock
 
 from sas_force_sensor_bota.shared_memory.common import shared_memory_map
 

@@ -42,9 +42,10 @@ def communication_loop(run):
                 # If connection is open, update, handle q and qd
                 if fsb.is_open():
                     frame = fsb.read()
-                    f = frame.force
-                    t = frame.torque
-                    shared_memory_server.send_wrench(f + t)
+                    if frame is not None:
+                        f = frame.force
+                        t = frame.torque
+                        shared_memory_server.send_wrench(f + t)
                     #rclpy.spin_once(fsb)
 
                 # Always send connection status
