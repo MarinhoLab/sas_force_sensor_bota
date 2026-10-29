@@ -11,6 +11,7 @@ see <https://www.gnu.org/licenses/>.
 from sas_force_sensor_bota.force_sensor_communication_loop import communication_loop
 from sas_force_sensor_bota.gui import run
 
+
 def main():
     communication_loop(run)
 

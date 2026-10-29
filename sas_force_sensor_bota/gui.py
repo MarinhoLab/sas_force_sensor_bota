@@ -11,14 +11,21 @@ see <https://www.gnu.org/licenses/>.
 from queue import Queue
 
 import numpy as np
-
-from PyQt6.QtCore import QTimer, Qt, QCoreApplication
-from PyQt6.QtWidgets import QWidget, QApplication, QMainWindow, QSlider, QHBoxLayout, QVBoxLayout, QLabel
-
-import qdarktheme
 import pyqtgraph as pg
+import qdarktheme
+from PyQt6.QtCore import QCoreApplication, Qt, QTimer
+from PyQt6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
+)
 
 from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
+
 
 class SliderLabelVertical(QWidget):
     def __init__(self, label:str, slider_range:tuple[int,int] , parent=None):
@@ -182,12 +189,12 @@ class ForceSensorMainWindow(QMainWindow):
                 self.plot_tz.setTitle("tz")
 
                 self.force_slider.set_value(int(f_norm))
-                self.force_slider.set_text('{:.2f}'.format(f_norm))
+                self.force_slider.set_text(f'{f_norm:.2f}')
 
                 t = np.array(wrench[3:5])
                 t_norm = np.linalg.norm(t)
                 self.torque_slider.set_value(int(t_norm))
-                self.torque_slider.set_text('{:.2f}'.format(t_norm))
+                self.torque_slider.set_text(f'{t_norm:.2f}')
 
             if self.shared_memory_client.get_shutdown_flag():
                 QCoreApplication.quit()

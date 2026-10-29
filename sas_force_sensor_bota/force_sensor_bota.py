@@ -10,13 +10,14 @@ see <https://www.gnu.org/licenses/>.
 """
 import os.path
 import pathlib
-import bota_driver
 
-from rclpy.node import Node
+import bota_driver
 from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import WrenchStamped
+from rclpy.node import Node
 
 from sas_core import Clock
+
 
 class ForceSensorBota(Node):
     def __init__(self):

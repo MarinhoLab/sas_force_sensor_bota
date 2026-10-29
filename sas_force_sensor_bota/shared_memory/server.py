@@ -14,6 +14,7 @@ from multiprocessing.shared_memory import ShareableList
 
 from sas_force_sensor_bota.shared_memory.common import shared_memory_map
 
+
 class ForceSensorSharedMemoryServer:
     def __init__(self,
                  shared_memory_manager: SharedMemoryManager,

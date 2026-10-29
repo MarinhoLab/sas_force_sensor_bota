@@ -9,8 +9,8 @@ You should have received a copy of the GNU General Public License along with thi
 see <https://www.gnu.org/licenses/>.
 """
 import numpy as np
-from rclpy.node import Node
 from geometry_msgs.msg import WrenchStamped
+
 
 class ForceSensorClient:
     def __init__(self, node, topic_prefix):

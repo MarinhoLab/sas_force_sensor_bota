@@ -9,15 +9,16 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Gen
 You should have received a copy of the GNU General Public License along with this program. If not,
 see <https://www.gnu.org/licenses/>.
 """
-import rclpy
-
 import multiprocessing as mp
 import multiprocessing.managers as mm
 import time
 
-from sas_force_sensor_bota.shared_memory.server import ForceSensorSharedMemoryServer
-from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
+import rclpy
+
 from sas_force_sensor_bota.force_sensor_bota import ForceSensorBota
+from sas_force_sensor_bota.shared_memory.client import ForceSensorSharedMemoryClient
+from sas_force_sensor_bota.shared_memory.server import ForceSensorSharedMemoryServer
+
 
 def communication_loop(run):
     rclpy.init()
