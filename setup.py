@@ -17,12 +17,12 @@ setup(
         (os.path.join('share', package_name, 'config'), glob(os.path.join('config', '*.json'))),
         (os.path.join('share', package_name, 'config'), glob(os.path.join('config', '*.yaml')))
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'bota-driver'],
     zip_safe=True,
     maintainer='Murilo Marinho',
     maintainer_email='murilo.marinho@manchester.ac.uk',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Bota Systems force torque sensor package compliant with the SmartArmStack sas framework',
+    license='LGPL-2.1-only',
     extras_require={
         'test': [
             'pytest',
