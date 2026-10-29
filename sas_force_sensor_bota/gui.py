@@ -198,7 +198,7 @@ class ForceSensorMainWindow(QMainWindow):
 
             if self.shared_memory_client.get_shutdown_flag():
                 QCoreApplication.quit()
-        except ...:
+        except Exception:
             pass
 
 def run(shared_memory_info, lock):
