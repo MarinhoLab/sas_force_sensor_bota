@@ -28,4 +28,6 @@ services:
       cd /root/sas_force_sensor_bota_devel
       && colcon build
       && source install/setup.bash
+      && colcon test
+      && colcon test-result
       && timeout -s INT $$TIMEOUT ros2 run sas_force_sensor_bota sas_force_sensor_client_example_node"
